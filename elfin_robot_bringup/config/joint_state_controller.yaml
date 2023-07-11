@@ -1,0 +1,10 @@
+joint_state_controller:
+    type: joint_state_controller/JointStateController
+    joints:
+      - elfin_joint1
+      - elfin_joint2
+      - elfin_joint3
+      - elfin_joint4
+      - elfin_joint5
+      - elfin_joint6
+    publish_rate: 50  
