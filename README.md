@@ -9,15 +9,15 @@ Chinese version of the README -> please [click here](./README_cn.md)
   <img src="docs/images/elfin.png" />
 </p>
 
-This repository provides ROS support for the Elfin-S Robot. The recommend operating environment is on Ubuntu 18.04 with ROS Melodic. So far These packages haven't been tested in other environment.
+This repository provides ROS support for the Elfin-S Robot. The recommend operating environment is on Ubuntu 20.04 with ROS noetic. So far These packages haven't been tested in other environment.
 
 ### Installation
 
-#### Ubuntu 18.04 + ROS Melodic
+#### Ubuntu 20.04 + ROS noetic
 
 **Install some important dependent software packages:**
 ```sh
-$ sudo apt-get install ros-melodic-soem ros-melodic-gazebo-ros-control ros-melodic-ros-control ros-melodic-ros-controllers
+$ sudo apt-get install ros-noetic-soem ros-noetic-gazebo-ros-control ros-noetic-ros-control ros-noetic-ros-controllers
 ```
 **Install or upgrade MoveIt!.** 
 
@@ -27,12 +27,66 @@ Install/Upgrade MoveIt!:
 
 ```sh
 $ sudo apt-get update
-$ sudo apt-get install ros-melodic-moveit-*
+$ sudo apt-get install ros-noetic-moveit-*
 ```
 
 install trac_ik plugin
 ```sh
-sudo apt-get install ros-melodic-trac-ik
+sudo apt-get install ros-noetic-trac-ik
+```
+
+**Related environment configuration**
+Please ensure that the current system Python version is 3.8. 
+If the system does not specify a python version after installation, please execute the following instructions
+
+Check Python version
+```sh
+$ python --version
+```
+
+If the python version is not output, that is, the system does not specify a python version, execute the following instructions
+Check the python version installed on the current system
+```sh
+$ ls /usr/bin/python*
+```
+
+Check Python configuration scheme
+```sh
+$ sudo update-alternativers --list python
+```
+
+Configure Python scheme
+```sh
+$ sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1
+$ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 2
+```
+
+Change Python Version
+```sh
+$ sudo update-alternatives --config python
+```
+Enter 2 to switch to python3
+
+Set Python links
+```sh
+$ sudo ln -s /usr/bin/python3.8 python
+```
+
+If there are hava links, delete them first
+```sh
+$ sudo rm python
+```
+And set Python links again
+
+After setting, please check the python version again to ensure that the version is 3.8
+```sh
+$ python --version
+```
+
+Install related software packages
+```sh
+$ sudo apt-get install build-essential libgtk-3-dev
+$ sudo pip install wxpython
 ```
 
 **Install this repository from Source**
@@ -86,7 +140,7 @@ Every time you want to plan a trajectory, you should set the start state to curr
 
 ###  Usage with real Hardware
 
-***There are launch files available to bringup a real robot - either Elfin-S05, Elfin-S10 or Elfin-20.  
+***There are launch files available to bringup a real robot - either Elfin-S05, Elfin-S10 or Elfin-S20.  
 In the following the commands for Elfin-S05 are given. For Elfin-S10 or Elfin-S20, simply replace the prefix accordingly.***
 
 Put the file *elfin_drivers.yaml*, that you got from the vendor, into the folder elfin_robot_bringup/config/.

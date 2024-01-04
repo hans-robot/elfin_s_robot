@@ -1,5 +1,5 @@
 elfin_arm_controller:
-  type: position_controllers/JointTrajectoryController
+  type: elfin_pos_vel_controllers/JointTrajectoryController
   joints:
      - elfin_joint1
      - elfin_joint2
