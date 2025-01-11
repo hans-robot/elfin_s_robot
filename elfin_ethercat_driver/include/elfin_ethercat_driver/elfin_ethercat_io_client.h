@@ -86,6 +86,7 @@ private:
     ros::ServiceServer write_sdo_; //20201117
     ros::ServiceServer get_txsdo_server_;//20201120
     ros::ServiceServer get_rxsdo_server_;//20201120
+    ros::ServiceServer set_led_; //20231023
 
 public:
     ElfinEtherCATIOClient(EtherCatManager* manager, int slave_no, const ros::NodeHandle& nh, std::string io_port_name);
@@ -94,6 +95,7 @@ public:
     int32_t readDO_unit(int n); // 20201130
     void writeOutput_unit(int n, int32_t val);
     int32_t writeSDO_unit(int n); // 20201117
+    void writeLEDOutput_unit(int n, int32_t val);//20231023
 
     int16_t readInput_unit(int n);
     int32_t readOutput_unit(int n);
@@ -101,12 +103,15 @@ public:
 
     std::string getTxSDO();
     std::string getRxSDO();
+    int32_t led_output[8]={0,4096, 8192, 12288, 16384, 20480, 24576,28672};
 
     bool readSDO_cb(elfin_robot_msgs::ElfinIODRead::Request &req, elfin_robot_msgs::ElfinIODRead::Response &resp); // 20201117
     bool readDO_cb(elfin_robot_msgs::ElfinIODRead::Request &req, elfin_robot_msgs::ElfinIODRead::Response &resp); // 20201130
     bool writeSDO_cb(elfin_robot_msgs::ElfinIODWrite::Request &req, elfin_robot_msgs::ElfinIODWrite::Response &resp); // 20201117
     bool getRxSDO_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &resp);
     bool getTxSDO_cb(std_srvs::SetBool::Request &req, std_srvs::SetBool::Response &resp);
+    bool writeLEDSDO_cb(elfin_robot_msgs::ElfinIODWrite::Request &req, elfin_robot_msgs::ElfinIODWrite::Response &resp);
+
 };
 
 }

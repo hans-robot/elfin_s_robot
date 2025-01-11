@@ -7,7 +7,7 @@ If you don't speak chinese, please [click here](./README_english.md)
   <img src="docs/images/elfin.png" />
 </p>
 
-
+本功能包为新电箱配置专门修改，配置为"归一化电箱"使用本功能包，其他配置请勿使用，否则会造成不可控后果
 本文件夹中包含了多个为Elfin-S机器人提供ROS支持的软件包。推荐的运行环境为 Ubuntu 18.04 + ROS Melodic, 其他环境下的运行情况没有测试过。
 
 ### 安装软件包

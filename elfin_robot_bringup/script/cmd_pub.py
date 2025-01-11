@@ -41,6 +41,7 @@ Created on Mon Nov 27 15:02:10 2017
 
 # author: Cong Liu
 import rospy
+import time
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import PoseStamped, PoseArray, Pose
 
@@ -50,12 +51,21 @@ class CmdPub(object):
         self.cart_pub=rospy.Publisher('elfin_basic_api/cart_goal', PoseStamped, queue_size=1)
         self.cart_path_pub=rospy.Publisher('elfin_basic_api/cart_path_goal', PoseArray, queue_size=1)
     def function_pub_joints(self):
-        js=JointState()
-        js.name=['elfin_joint1', 'elfin_joint2', 'elfin_joint3',
-                 'elfin_joint4', 'elfin_joint5', 'elfin_joint6']
-        js.position=[0.4, -0.4, 0.4, 0.4, 0.4, 0.4]
-        js.header.stamp=rospy.get_rostime()
-        self.joints_pub.publish(js)
+        while not rospy.is_shutdown():
+            js=JointState()
+            js.name=['elfin_joint1', 'elfin_joint2', 'elfin_joint3',
+                    'elfin_joint4', 'elfin_joint5', 'elfin_joint6']
+            js.position=[1.57, -1.57, 1.57, -1.57, 1.57, 1.57]
+            js.header.stamp=rospy.get_rostime()
+            self.joints_pub.publish(js)
+            time.sleep(15.0)
+            js1=JointState()
+            js1.name=['elfin_joint1', 'elfin_joint2', 'elfin_joint3',
+                    'elfin_joint4', 'elfin_joint5', 'elfin_joint6']
+            js1.position=[-1.57, 0, -1.57, 1.57, -1.57, -1.57]
+            js1.header.stamp=rospy.get_rostime()
+            self.joints_pub.publish(js1)
+            time.sleep(15.0)
 
     def function_pub_cart_elfin3(self):
         ps=PoseStamped()

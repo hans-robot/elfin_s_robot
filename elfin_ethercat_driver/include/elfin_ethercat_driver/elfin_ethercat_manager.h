@@ -44,7 +44,7 @@ namespace elfin_ethercat_driver {
 typedef struct {
     std::string name;
     int32_t value;
-    uint8_t channel;
+    uint16_t channel;
 }ElfinPDOunit;
 
 /**

@@ -53,12 +53,10 @@ ElfinHWInterface::ElfinHWInterface(elfin_ethercat_driver::EtherCatManager *manag
     // Initialize ethercat_drivers_
     ethercat_drivers_.clear();
     ethercat_drivers_.resize(elfin_driver_names_.size());
-
     for(int i=0; i<ethercat_drivers_.size(); i++)
     {
         ethercat_drivers_[i]=new elfin_ethercat_driver::ElfinEtherCATDriver(manager, elfin_driver_names_[i]);
     }
-
     // Initialize module_infos_
     module_infos_.clear();
     for(size_t i=0; i<ethercat_drivers_.size(); i++)

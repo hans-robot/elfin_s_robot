@@ -74,6 +74,7 @@ ElfinEtherCATIOClient::ElfinEtherCATIOClient(EtherCatManager *manager, int slave
     write_sdo_=io_nh_.advertiseService("write_do",&ElfinEtherCATIOClient::writeSDO_cb, this); // 20201117: support for 485 end
     get_txsdo_server_=io_nh_.advertiseService("get_txpdo", &ElfinEtherCATIOClient::getTxSDO_cb, this); // 20201120: support for 485 end
     get_rxsdo_server_=io_nh_.advertiseService("get_rxpdo", &ElfinEtherCATIOClient::getRxSDO_cb, this); // 20201120: support for 485 end
+    set_led_ = io_nh_.advertiseService("write_led", &ElfinEtherCATIOClient::writeLEDSDO_cb, this);
 
 }
 
@@ -86,21 +87,26 @@ int16_t ElfinEtherCATIOClient::readInput_unit(int n)
 {
 
     int16_t map;
-    map = (manager_->readSDO<int16_t>(7, 0x6001, 0x01)); // read the end DI
+    map = (manager_->readSDO<int16_t>(8, 0x6001, 0x01)); // read the end DI
     return map;
 }
 
 int32_t ElfinEtherCATIOClient::readOutput_unit(int n)
 {
     int32_t map;
-    map = (manager_->readSDO<int32_t>(7, 0x7001, 0x01)) << 12; 
+    map = (manager_->readSDO<int32_t>(8, 0x7001, 0x01)) << 12; 
     return map;
 }
 
 void ElfinEtherCATIOClient::writeOutput_unit(int n, int32_t val)
 {
 
-    manager_->writeSDO<int32_t>(7,0x7001,0x01, val >> 12);
+    manager_->writeSDO<int32_t>(8,0x7001,0x01, val >> 12);
+}
+
+void ElfinEtherCATIOClient::writeLEDOutput_unit(int n, int32_t val)
+{
+    manager_->writeSDO<int32_t>(8,0x7001,0x01, led_output[val]);
 }
 
 // 20201116: read the end SDO
@@ -170,12 +176,12 @@ std::string ElfinEtherCATIOClient::getTxSDO()
     char temp[8];
     std::string result="slave";
     result.reserve(160);
-    result.append("7_txpdo:\n");
+    result.append("8_txpdo:\n");
     for (unsigned i = 0; i < length; ++i)
     {
         map[i] = 0x00;
         sprintf(temp,"0x%.2x",(uint8_t)map[i]);
-        result.append(temp, 7);
+        result.append(temp, 8);
         result.append(":");
     }
     result.append("\n");
@@ -189,12 +195,12 @@ std::string ElfinEtherCATIOClient::getRxSDO()
     char temp[8];
     std::string result="slave";
     result.reserve(160);
-    result.append("7_rxpdo:\n");
+    result.append("8_rxpdo:\n");
     for (unsigned i = 0; i < length; ++i)
     {
         map[i] = 0x00;
         sprintf(temp,"0x%.2x",(uint8_t)map[i]);
-        result.append(temp, 7);
+        result.append(temp, 8);
         result.append(":");
     }
     result.append("\n");
@@ -220,6 +226,14 @@ bool ElfinEtherCATIOClient::readDO_cb(elfin_robot_msgs::ElfinIODRead::Request &r
 bool ElfinEtherCATIOClient::writeSDO_cb(elfin_robot_msgs::ElfinIODWrite::Request &req, elfin_robot_msgs::ElfinIODWrite::Response &resp)
 {
     writeOutput_unit(elfin_io_rxpdo::DIGITAL_OUTPUT,req.digital_output);
+    resp.success=true;
+    return true;
+}
+
+//20231023
+bool ElfinEtherCATIOClient::writeLEDSDO_cb(elfin_robot_msgs::ElfinIODWrite::Request &req, elfin_robot_msgs::ElfinIODWrite::Response &resp)
+{
+    writeLEDOutput_unit(elfin_io_rxpdo::DIGITAL_OUTPUT,req.digital_output);
     resp.success=true;
     return true;
 }

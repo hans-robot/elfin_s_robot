@@ -49,7 +49,7 @@
 
 namespace 
 {
-static const unsigned THREAD_SLEEP_TIME = 1000; // 1 ms
+static const unsigned THREAD_SLEEP_TIME = 4000; // 1 ms
 static const unsigned EC_TIMEOUTMON = 500;
 static const int NSEC_PER_SECOND = 1e+9;
 void timespecInc(struct timespec &tick, int nsec)
@@ -69,7 +69,7 @@ void handleErrors()
   ec_readstate();
   for (int slave = 1; slave <= ec_slavecount; slave++)
   {
-    if ((ec_slave[slave].group == 0) && (ec_slave[slave].state != EC_STATE_OPERATIONAL) && slave != 7)
+    if ((ec_slave[slave].group == 0) && (ec_slave[slave].state != EC_STATE_OPERATIONAL)&& slave != 8)
     {
       ec_group[0].docheckstate = TRUE;
       if (ec_slave[slave].state == (EC_STATE_SAFE_OP + EC_STATE_ERROR))
@@ -78,13 +78,13 @@ void handleErrors()
         ec_slave[slave].state = (EC_STATE_SAFE_OP + EC_STATE_ACK);
         ec_writestate(slave);
       }
-      else if(ec_slave[slave].state == EC_STATE_SAFE_OP && slave != 7)
+      else if(ec_slave[slave].state == EC_STATE_SAFE_OP && slave != 8)
       {
         fprintf(stderr, "WARNING : slave %d is in SAFE_OP, change to OPERATIONAL.\n", slave);
         ec_slave[slave].state = EC_STATE_OPERATIONAL;
         ec_writestate(slave);
       }
-      else if(ec_slave[slave].state != EC_STATE_SAFE_OP && slave == 7 )
+      else if(ec_slave[slave].state != EC_STATE_SAFE_OP && slave == 8)
       {
         fprintf(stderr, "WARNING : slave %d is no in SAFE_OP, change to SAFE_OP.\n", slave);
         ec_slave[slave].state = EC_STATE_SAFE_OP;
@@ -241,7 +241,7 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
 
   printf("SOEM found and configured %d slaves\n", ec_slavecount);
 
-  if (ec_statecheck(0, EC_STATE_PRE_OP, EC_TIMEOUTSTATE*4) != EC_STATE_PRE_OP)
+  if (ec_statecheck(0, EC_STATE_PRE_OP, EC_TIMEOUTSTATE*8) != EC_STATE_PRE_OP)
   {
     fprintf(stderr, "Could not set EC_STATE_PRE_OP\n");
     return false;
@@ -252,11 +252,11 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
   printf("SOEM IOMap size: %d\n", iomap_size);
 
   // locates dc slaves - ???
-  ec_configdc();
+  // ec_configdc();
 
   // '0' here addresses all slaves
   
-  if (ec_statecheck(0, EC_STATE_SAFE_OP, EC_TIMEOUTSTATE*7) != EC_STATE_SAFE_OP)
+  if (ec_statecheck(0, EC_STATE_SAFE_OP, EC_TIMEOUTSTATE*8) != EC_STATE_SAFE_OP)
   {
     fprintf(stderr, "Could not set salve %d to EC_STATE_SAFE_OP\n",0);
     return false;
@@ -268,25 +268,30 @@ bool EtherCatManager::initSoem(const std::string& ifname) {
       then proceeding through 40 send/recieve cycles each waiting up to 50 ms for a
       response about the status. 
   */
-  for(int i=1;i<7;i++){
+    int expectedWKC = (ec_group[0].outputsWKC * 2) + ec_group[0].inputsWKC;
+    printf("Calculated workcounter %d\n", expectedWKC);
+  for(int i=1;i<8;i++){
     ec_slave[i].state = EC_STATE_OPERATIONAL;
+    ec_writestate(i);
     ec_send_processdata();
     ec_receive_processdata(EC_TIMEOUTRET);
+    // ec_writestate(0);
 
-    ec_writestate(i);
-    int chk = 40;
+    int chk = 200;
     do {
       ec_send_processdata();
       ec_receive_processdata(EC_TIMEOUTRET);
       ec_statecheck(i, EC_STATE_OPERATIONAL, 50000); // 50 ms wait for state check
     } while (chk-- && (ec_slave[i].state != EC_STATE_OPERATIONAL));
-
+      fprintf(stderr, "Slave %d,chk %d \n",i,chk);
     if(ec_statecheck(i,EC_STATE_OPERATIONAL, EC_TIMEOUTSTATE) != EC_STATE_OPERATIONAL)
     {
-      fprintf(stderr, "OPERATIONAL state not set, exiting\n");
+      fprintf(stderr, "Slave %d OPERATIONAL state not set, exiting\n",i);
       return false;
     }
+
   }
+
   ec_readstate();
 
   printf("\nFinished configuration successfully\n");

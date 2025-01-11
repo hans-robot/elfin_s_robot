@@ -13,7 +13,6 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   sensor_msgs
-  soem
   tf
   trajectory_msgs
   transmission_interface
@@ -111,7 +110,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
  INCLUDE_DIRS include
  LIBRARIES elfin_ethercat_driver
- CATKIN_DEPENDS controller_manager diagnostic_updater hardware_interface joint_limits_interface roscpp rospy sensor_msgs soem tf trajectory_msgs transmission_interface
+ CATKIN_DEPENDS controller_manager diagnostic_updater hardware_interface joint_limits_interface roscpp rospy sensor_msgs tf trajectory_msgs transmission_interface
  DEPENDS system_lib
 )
 
@@ -122,9 +121,16 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 # include_directories(include)
+
+SET(SOEM_INC
+  $(PROJECT_SOURCE_DIR)../SOEM/osal/linux
+  $(PROJECT_SOURCE_DIR)../SOEM/osal
+  $(PROJECT_SOURCE_DIR)../SOEM/oshw/linux
+  $(PROJECT_SOURCE_DIR)../SOEM/soem
+)
 include_directories(
   ${catkin_INCLUDE_DIRS}
-  ${soem_INCLUDE_DIRS}/soem
+  ${SOEM_INC}
   include
 )
 
@@ -138,10 +144,12 @@ add_library(elfin_ethercat_driver
   src/elfin_ethercat_client.cpp
   src/elfin_ethercat_io_client.cpp
   src/elfin_ethercat_manager.cpp
+  src/elfin_ethercat_controlbox.cpp
   include/${PROJECT_NAME}/elfin_ethercat_driver.h
   include/${PROJECT_NAME}/elfin_ethercat_client.h
   include/${PROJECT_NAME}/elfin_ethercat_io_client.h
   include/${PROJECT_NAME}/elfin_ethercat_manager.h
+  include/${PROJECT_NAME}/elfin_ethercat_controlbox.h
 )
 
 
@@ -152,7 +160,7 @@ add_dependencies(elfin_ethercat_driver ${${PROJECT_NAME}_EXPORTED_TARGETS} ${cat
 
 
 # Specify libraries to link a library or executable target against
-target_link_libraries(elfin_ethercat_driver
+target_link_libraries(elfin_ethercat_driver ${PROJECT_SOURCE_DIR}/../SOEM/libsoem.a
   ${catkin_LIBRARIES}
 )
 

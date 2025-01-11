@@ -45,7 +45,7 @@ ElfinEtherCATDriver::ElfinEtherCATDriver(EtherCatManager *manager, std::string d
     driver_name_(driver_name), root_nh_(nh), ed_nh_(nh, driver_name)
 {
     // Initialize slave_no_
-    int slave_no_array_default[6]={1, 2, 3, 4, 5, 6};
+    int slave_no_array_default[6]={2, 3, 4, 5, 6, 7};
     std::vector<int> slave_no_default;
     slave_no_default.clear();
     slave_no_default.reserve(6);
@@ -176,6 +176,27 @@ ElfinEtherCATDriver::ElfinEtherCATDriver(EtherCatManager *manager, std::string d
     // Initialize motion_threshold_ and pos_align_threshold_
     motion_threshold_=5e-5;
     pos_align_threshold_=5e-5;
+
+    // Initialize control box
+    int controlbox_slave_no_array_default[1]={1};
+    std::vector<int> controlbox_slave_no_default;
+    controlbox_slave_no_default.clear();
+    controlbox_slave_no_default.reserve(1);
+    for(int i=0; i<1; i++)
+    {
+        controlbox_slave_no_default.push_back(controlbox_slave_no_array_default[i]);
+    }
+
+    // Initialize ethercat_controlbox_client_
+    std::string controlbox_name="elfin_controlbox";
+    ethercat_controlbox_clients_.clear();
+    ethercat_controlbox_clients_.resize(controlbox_slave_no_default.size());
+    for(int i=0; i<controlbox_slave_no_default.size(); i++)
+    {
+        std::string num=boost::lexical_cast<std::string>(i+1);
+        std::string controlbox_port_name=controlbox_name.append(num);
+        ethercat_controlbox_clients_[i]=new ElfinEtherCATControlBoxClient(manager, controlbox_slave_no_array_default[i]);
+    }
 
     // Initialize ethercat_client_
     ethercat_clients_.clear();

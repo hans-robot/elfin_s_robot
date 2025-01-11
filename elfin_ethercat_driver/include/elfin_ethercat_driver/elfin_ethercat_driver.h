@@ -41,6 +41,7 @@ Created on Mon Sep 17 10:22:24 2018
 #define ELFIN_ETHERCAT_DRIVER_H
 
 #include <elfin_ethercat_driver/elfin_ethercat_client.h>
+#include <elfin_ethercat_driver/elfin_ethercat_controlbox.h>
 #include <elfin_ethercat_driver/elfin_ethercat_io_client.h>
 
 namespace elfin_ethercat_driver {
@@ -90,6 +91,8 @@ private:
 
         std::vector<ElfinEtherCATIOClient*> ethercat_io_clients_;
         std::vector<int> io_slave_no_;
+
+        std::vector<ElfinEtherCATControlBoxClient*> ethercat_controlbox_clients_;
 
         std::string driver_name_;
         ros::NodeHandle root_nh_, ed_nh_;

@@ -9,6 +9,8 @@ Chinese version of the README -> please [click here](./README_cn.md)
   <img src="docs/images/elfin.png" />
 </p>
 
+This  package is specially modified for the new electric box configuration. Use this function package when configured as "normalized electric box". Do not use it with other configurations, otherwise it will cause uncontrollable consequences.
+
 This repository provides ROS support for the Elfin-S Robot. The recommend operating environment is on Ubuntu 18.04 with ROS Melodic. So far These packages haven't been tested in other environment.
 
 ### Installation
