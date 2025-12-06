@@ -37,7 +37,7 @@ sudo apt-get install ros-melodic-trac-ik
 假设你的工作空间是~/catkin_ws，你需要运行的命令如下：
 ```sh
 $ cd ~/catkin_ws/src
-$ git clone https://github.com/hans-robot/elfin_s_robot.git 
+$ git clone https://github.com/huayan-robotics/elfin_s_robot.git 
 $ cd ..
 $ catkin_make
 $ source devel/setup.bash
@@ -50,7 +50,7 @@ $ source devel/setup.bash
 假设你的工作空间是~/catkin_ws，你需要运行的命令如下：
 ```sh
 $ cd ~/catkin_ws/src
-$ git clone https://github.com/hans-robot/elfin_s_robot.git 
+$ git clone https://github.com/huayan-robotics/elfin_s_robot.git 
 $ cd ..
 $ catkin_make
 $ source devel/setup.bash
